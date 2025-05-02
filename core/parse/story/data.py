@@ -1,16 +1,11 @@
-__all__ = ["story_data", "text_data", "raw_text_data"]
+__all__ = ['story_data', 'text_data', 'raw_text_data']
 
 import os
 import re
 
 from core.util import json
 from core.data.story import StoryParser, StoryData, InvalidData
-from core.constant import (
-    story_table_path,
-    roguelike_topic_path,
-    story_path,
-    invalid_story_id,
-)
+from core.constant import story_table_path, roguelike_topic_path, story_path, invalid_story_id
 
 story_data: dict[str, StoryData] = {}
 text_data: dict[str, dict[str, str]] = {}
@@ -19,7 +14,7 @@ raw_text_data: dict[str, dict[str, str]] = {}
 # 节省储存空间
 seq = 1
 
-for _id in json.load(story_table_path % "zh_CN"):
+for _id in json.load(story_table_path % 'zh_CN'):
     _id = _id.lower()
     try:
         story = StoryParser.parse(_id)
@@ -28,10 +23,10 @@ for _id in json.load(story_table_path % "zh_CN"):
     except InvalidData:
         pass
 
-for rogue_data in json.load(roguelike_topic_path % "zh_CN")["details"].values():
-    for squad in rogue_data["archiveComp"]["chat"]["chat"].values():
-        for chat in squad["clientChatItemData"]:
-            _id = chat["chatStoryId"].lower()
+for rogue_data in json.load(roguelike_topic_path % 'zh_CN')['details'].values():
+    for squad in rogue_data['archiveComp']['chat']['chat'].values():
+        for chat in squad.get('clientChatItemData') or squad['chatItemList']:
+            _id = chat['chatStoryId'].lower()
             try:
                 story_data[str(seq)] = StoryParser.parse(_id)
                 seq += 1
