@@ -37,7 +37,7 @@ for rogue_data in json.load(roguelike_topic_path % 'zh_CN')['details'].values():
 name_re = re.compile(r'\[name="(.+?)"] *')
 remove_tag_re = re.compile(r"\[.*?]")
 remove_mutil_n_re = re.compile(r"\n{2,}")
-extract_text_re = re.compile(r'\[[Ss]ticker.*text="(.*)".*]')
+extract_text_re = re.compile(r'\[[Ss]ticker.*?text="(.+?)(?:",.*?]|"])')
 
 # 由于各语种搜索方式略有差异，目前仅支持中文
 for lang in ["zh_CN"]:
@@ -57,6 +57,7 @@ for lang in ["zh_CN"]:
             p_text = name_re.sub(r"\1: ", p_text)
             p_text = remove_tag_re.sub("", p_text)
             p_text = remove_mutil_n_re.sub("\n", p_text)
+            p_text = p_text.replace("\\n", "\n")
             data[_id] = p_text
 
             raw_data[_id] = text
