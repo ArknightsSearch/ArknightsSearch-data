@@ -96,6 +96,11 @@ class MainData(StoryData):
             if group[-1] == 'recap':
                 self.zone = f'main_{group[2]}'
             elif group[1] in ['main', 'st', 'spst']:
+
+                if not group[2].isdigit():
+                    # TODO 临时补丁，17章主线更新引入
+                    raise InvalidData
+                
                 self.zone = f'main_{int(group[2].split("-")[0])}'
             else:
                 raise TypeError(f'Unknown zone {self.id}')
