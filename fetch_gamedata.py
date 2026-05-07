@@ -32,23 +32,30 @@ GAMEDATA_YOSTER_DIR = CWD / "gamedata_yoster"
 YOSTER_LANGUAGES = ("en_US", "ja_JP", "ko_KR")
 
 
-def run(cmd: list[str], cwd: Path | None = None) -> subprocess.CompletedProcess[str]:
-    result = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True)
-    if result.returncode != 0:
-        print(f"[ERROR] {' '.join(cmd)}", file=sys.stderr)
-        print(result.stderr, file=sys.stderr)
-    return result
+def _git_run(cmd: list[str], cwd: Path | None = None) -> bool:
+    process = subprocess.Popen(
+        cmd, cwd=cwd,
+        stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True,
+    )
+    assert process.stderr is not None
+    for line in process.stderr:
+        line = line.rstrip()
+        if line:
+            print(f"  {line}")
+    process.wait()
+    if process.returncode != 0:
+        print(f"[ERROR] git command failed (exit {process.returncode})", file=sys.stderr)
+        return False
+    return True
 
 
 def clone_or_pull(repo_url: str, target: Path) -> bool:
     if (target / ".git").exists():
         print(f"[pull] {target.name} ...")
-        result = run(["git", "pull", "--ff-only"], cwd=target)
-        return result.returncode == 0
+        return _git_run(["git", "pull", "--ff-only", "--progress"], cwd=target)
     else:
         print(f"[clone] {repo_url} → {target}")
-        result = run(["git", "clone", "--depth", "1", repo_url, str(target)])
-        return result.returncode == 0
+        return _git_run(["git", "clone", "--progress", "--depth", "1", repo_url, str(target)])
 
 
 def merge_yoster_languages(languages: tuple[str, ...]) -> None:
@@ -99,6 +106,10 @@ def main():
 
     if not args.no_yoster and args.languages:
         merge_yoster_languages(tuple(args.languages))
+
+    if not args.no_yoster and GAMEDATA_YOSTER_DIR.exists() and ok:
+        print(f"[cleanup] Removing {GAMEDATA_YOSTER_DIR.name}")
+        shutil.rmtree(GAMEDATA_YOSTER_DIR)
 
     if ok:
         print("[done] gamedata fetched successfully.")
