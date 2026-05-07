@@ -21,4 +21,5 @@ for stage_id, stage_data in data['stages'].items():
     if zone_id in activity_id2code:
         continue
 
-    activity_id2code[zone_id] = stage_data['code'].split('-')[0]
+    if stage_data['code']:
+        activity_id2code[zone_id] = stage_data['code'].split('-')[0]
