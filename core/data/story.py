@@ -1,3 +1,4 @@
+import re
 from copy import deepcopy
 
 from core.name import story_name, story_code, month_squad_name, activity_id2code
@@ -90,16 +91,15 @@ class MainData(StoryData):
             raise TypeError(f'Unknown story type {self.id}')
 
     def parse_zone(self):
-        group = self.filename.split('_')
+        group = re.split(r'[\-_]',self.filename)
+        print(self.filename)
         if group[0] == 'level':
             if group[-1] == 'recap':
                 self.zone = f'main_{group[2]}'
+            elif group[2] == 'tr28':
+                # 主线17章教程关，结束后剧情 自由の角
+                self.zone='main_17'
             elif group[1] in ['main', 'st', 'spst']:
-
-                if not group[2].isdigit():
-                    # TODO 临时补丁，17章主线更新引入
-                    raise InvalidData
-                
                 self.zone = f'main_{int(group[2].split("-")[0])}'
             else:
                 raise TypeError(f'Unknown zone {self.id}')
