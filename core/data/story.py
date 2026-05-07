@@ -92,7 +92,6 @@ class MainData(StoryData):
 
     def parse_zone(self):
         group = re.split(r'[\-_]',self.filename)
-        print(self.filename)
         if group[0] == 'level':
             if group[-1] == 'recap':
                 self.zone = f'main_{group[2]}'
