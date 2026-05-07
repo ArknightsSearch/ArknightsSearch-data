@@ -1,0 +1,9 @@
+[project]
+name = "arknightssearch-data"
+version = "0.1.0"
+description = "ArknightsSearch data provider scripts"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "aiohttp>=3.11",
+]
