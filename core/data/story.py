@@ -1,4 +1,3 @@
-from typing import Optional, Union
 from copy import deepcopy
 
 from core.name import story_name, story_code, month_squad_name, activity_id2code
@@ -17,8 +16,8 @@ class StoryData:
     code: str | None
     zone: str
     zone_name: dict[str, str]
-    data: Optional[dict]
-    lang: Optional[dict[str, dict[str]]]
+    data: dict | None
+    lang: dict[str, dict[str, str]]
 
     def __init__(self, story_id: str):
         self.id = story_id
@@ -218,7 +217,7 @@ class ActivityStory(StoryData):
             self.zone = '1stact'
 
 
-Data = Union[MemoryData, MainData, RogueData, ActivityStory]
+Data = MemoryData | MainData | RogueData | ActivityStory
 
 
 class StoryParser:

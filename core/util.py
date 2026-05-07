@@ -1,22 +1,21 @@
 import os
 import hashlib
+import json as _json
 from typing import Any
-
-import simdjson
 
 from .constant import data_path, hash_path
 
 
 class Json:
     @staticmethod
-    def dump(data, path: str) -> str:
+    def dump(data, path: str) -> None:
         with open(path, mode='wt', encoding='utf-8') as f:
-            return simdjson.dump(data, f, ensure_ascii=False, indent=2)
+            _json.dump(data, f, ensure_ascii=False, indent=2)
 
     @staticmethod
     def load(path: str) -> Any:
         with open(path, mode='rt', encoding='utf-8') as f:
-            return simdjson.load(f)
+            return _json.load(f)
 
 
 json = Json
@@ -34,12 +33,12 @@ class Save:
         self.data_path: str = os.path.join(data_path, series)
         self.hash_path: str = os.path.join(hash_path, series)
         if not os.path.exists(self.data_path):
-            os.mkdir(self.data_path)
+            os.makedirs(self.data_path, exist_ok=True)
         if not os.path.exists(self.hash_path):
-            os.mkdir(self.hash_path)
+            os.makedirs(self.hash_path, exist_ok=True)
 
     def save(self, filename: str, data: Any):
-        _hash = hashlib.md5(simdjson.dumps(data, ensure_ascii=False).encode('utf-8')).hexdigest()
+        _hash = hashlib.md5(_json.dumps(data, ensure_ascii=False).encode('utf-8')).hexdigest()
         with open(os.path.join(self.hash_path, filename + '.txt'), mode='wt', encoding='utf-8') as f:
             f.write(_hash)
         json.dump(data, os.path.join(self.data_path, filename + '.json'))

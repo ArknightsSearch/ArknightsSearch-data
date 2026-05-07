@@ -2,11 +2,11 @@ __all__ = ['seq_data']
 
 import re
 import asyncio
+import json
 
-import simdjson as json
 import aiohttp
 
-r1 = re.compile('^\d')
+r1 = re.compile(r'^\d')
 
 
 def get_seq(char_id: str) -> str:
@@ -25,7 +25,7 @@ async def get_data():
             return json.loads(await r.text())
 
 
-name_data: dict[str, dict[str, list[str]]] = asyncio.new_event_loop().run_until_complete(get_data())
+name_data: dict[str, dict[str, list[str]]] = asyncio.run(get_data())
 pre_seq_data: dict[str, dict[str, set[str]]] = {}
 seq_data: list[list[list[str]]] = []
 

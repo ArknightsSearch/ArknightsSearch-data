@@ -7,7 +7,8 @@ from .data import story_data
 
 zone_set: set[str] = set()
 char_set: set[str] = set()
-[char_set.add(i.zone) if i.type == 'Memory' else zone_set.add(i.zone) for i in story_data.values()]
+for i in story_data.values():
+    (char_set if i.type == 'Memory' else zone_set).add(i.zone)
 
 zone_name: dict[str, dict[str, str]] = {k: base_name[k] for k in zone_set if k not in invalid_story_id}
 
