@@ -206,6 +206,11 @@ class ActivityStory(StoryData):
                 raise TypeError(f'Unknown story type {self.id}')
         elif group[0] in {'guide', 'tutorial', 'ui'}:
             raise InvalidData
+        elif group[0] == 'ark' and group[1] == 'odc':
+            if self.filename != 'ark_odc_act53side_guide':
+                raise TypeError(f'Unknown story type {self.id} (new ark_odc)')
+            # 疑似26年夏活嘉年华导入剧情，还没看到这部分剧情先搁置处理）
+            raise InvalidData
         else:
             raise TypeError(f'Unknown story type {self.id}')
 
